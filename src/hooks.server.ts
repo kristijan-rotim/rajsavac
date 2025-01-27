@@ -1,67 +1,76 @@
 import { type Handle, redirect } from '@sveltejs/kit';
-import PocketBase from 'pocketbase';
-import { DB_URL } from '$env/static/private';
 import { serializeNonPOJOs } from "$lib/utils";
 import { sequence } from "@sveltejs/kit/hooks";
+import { pb } from '$lib/index';
 
 export const authentication: Handle = async ({ event, resolve }) => {
-	event.locals.pb = new PocketBase(DB_URL);
+	event.locals.pb = pb;
 	event.locals.pb.authStore.loadFromCookie(event.request.headers.get('cookie') || '');
 
 	try {
-		// get an up-to-date auth store state by verifying and refreshing the loaded auth model (if any)
-		event.locals.pb.authStore.isValid && await event.locals.pb.collection('users').authRefresh();
-		event.locals.user = serializeNonPOJOs(event.locals.pb.authStore);
+		if (event.locals.pb.authStore.isValid) {
+			await event.locals.pb.collection('users').authRefresh();
+			event.locals.user = serializeNonPOJOs(event.locals.pb.authStore);
+		}
 	} catch (_) {
-		// clear the auth store on failed refresh
 		event.locals.pb.authStore.clear();
+		event.locals.user = undefined;
 	}
 
 	const response = await resolve(event);
 
-	const isProd = process.env.NODE_ENV === 'production';
-
 	response.headers.set(
 		'set-cookie',
-		event.locals.pb.authStore.exportToCookie(
-			{
-				httpOnly: isProd,
-				sameSite: 'strict',
-				secure: isProd,
-				maxAge: 60 * 60 * 24 * 7 // 1 week
-			}
-		)
+		event.locals.pb.authStore.exportToCookie({
+			secure: process.env.NODE_ENV === 'production',
+			sameSite: 'lax',
+			httpOnly: true,
+			path: '/',
+			maxAge: 60 * 60 * 24 * 7 // 1 week
+		})
 	);
 
 	return response;
 }
 
-// Define route configurations
-const PUBLIC_ROUTES: string[] = ['/login', '/register', '/', '/about'];
-const PROTECTED_ROUTES: string[] = ['/admin'];
-
 export const authorization: Handle = async ({ event, resolve }) => {
 	const { pathname } = event.url;
 
-	// Check if the current path is a protected route
-	const isProtectedRoute = PROTECTED_ROUTES.some(path =>
-		pathname.startsWith(path)
-	);
+	console.log("PATH => " + pathname)
 
-	// Check if user is authenticated
-	const isAuthenticated = event.locals.pb?.authStore?.isValid;
+	// Define route patterns
+	const PUBLIC_ROUTES = ['/login'];
+	const PROTECTED_ROUTES = ['/admin', '/dashboard', '/profile'];
 
-	// Redirect authenticated users away from auth pages
-	if (PUBLIC_ROUTES.includes(pathname) && isAuthenticated) {
-		throw redirect(303, '/dashboard');
+	const isPublicRoute = PUBLIC_ROUTES.some(route => pathname.startsWith(route));
+	const isProtectedRoute = PROTECTED_ROUTES.some(route => pathname.startsWith(route));
+	const isAuthenticated = !!event.locals.user;
+
+	// Handle authentication redirects
+	if (isPublicRoute && isAuthenticated) {
+		throw redirect(303, '/');
 	}
 
-	// Redirect unauthenticated users to login
 	if (isProtectedRoute && !isAuthenticated) {
-		throw redirect(303, '/login');
+		const fromUrl = event.url.pathname + event.url.search;
+		throw redirect(303, `/login?redirectTo=${encodeURIComponent(fromUrl)}`);
 	}
 
-	return resolve(event);
-};
+	// Add auth status to response headers for client-side checks
+	const response = await resolve(event);
+	response.headers.append('x-auth-status', isAuthenticated ? '1' : '0');
 
-export const handle = sequence(authentication, authorization)
+	return response;
+}
+
+// Create a handle for checking page navigation
+export const navigationGuard: Handle = async ({ event, resolve }) => {
+	if (event.request.method === 'GET') {
+		const response = await resolve(event);
+		response.headers.append('x-sveltekit-page', event.url.pathname);
+		return response;
+	}
+	return resolve(event);
+}
+
+export const handle = sequence(authentication, authorization, navigationGuard);

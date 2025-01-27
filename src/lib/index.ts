@@ -1,1 +1,4 @@
-// place files you want to import through the `$lib` alias in this folder.
+import { DB_URL } from '$env/static/private';
+import PocketBase from 'pocketbase';
+
+export const pb = new PocketBase(DB_URL);

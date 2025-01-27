@@ -1,21 +1,26 @@
-import { error, redirect } from "@sveltejs/kit";
+import { fail } from '@sveltejs/kit';
+import type { Actions } from './$types';
+import { pb } from '$lib/index';
 
 export const actions = {
-	login: async ({ locals, request }: { locals: any, request: any }) => {
-		const body = Object.fromEntries(await request.formData());
+	default: async ({ request }) => {
+		const data = await request.formData();
+		const email = data.get('email');
+		const password = data.get('password');
 
 		try {
-			await locals.pb.collection("users").authWithPassword(body.email, body.password);
+			await pb.collection('users').authWithPassword(
+				email as string,
+				password as string
+			);
 
-			if (!locals.pb?.authStore?.verified) {
-				locals.pb.authStore.clear();
-				return { notVerified: true };
-			}
-		} catch (err: any) {
-			console.log("Error: ", err);
-			throw error(err.status, err.message);
+			return { success: true };
+		} catch (err) {
+			console.log(err);
+			return fail(400, {
+				error: 'Invalid email or password',
+				email: email as string
+			});
 		}
-
-		throw redirect(303, "/admin");
-	},
-};
+	}
+} satisfies Actions;

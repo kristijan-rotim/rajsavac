@@ -34,7 +34,7 @@
 <Footer footerType="logo">
 	<div class="sm:flex sm:items-center sm:justify-between">
 		<FooterBrand
-			href="https://rajsavac-3xj8so5gf-kristijan-rotims-projects-8275e3ed.vercel.app"
+			href="https://rajsavac.vercel.app"
 			src="/NK_Dinamo_Rajsavac.png"
 			alt="Rajsavac Logo"
 			name="Rajsavac"

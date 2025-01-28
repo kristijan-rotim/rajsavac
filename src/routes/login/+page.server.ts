@@ -1,6 +1,6 @@
 import { fail } from '@sveltejs/kit';
 import type { Actions } from './$types';
-import { pb } from '$lib/index';
+import { pb } from '$lib';
 
 export const actions = {
 	default: async ({ request }) => {

@@ -1,7 +1,7 @@
 import { type Handle, redirect } from '@sveltejs/kit';
-import { serializeNonPOJOs } from "$lib/utils";
-import { sequence } from "@sveltejs/kit/hooks";
-import { pb } from '$lib/index';
+import { serializeNonPOJOs } from '$lib/utils';
+import { sequence } from '@sveltejs/kit/hooks';
+import { pb } from '$lib';
 
 export const authentication: Handle = async ({ event, resolve }) => {
 	event.locals.pb = pb;
@@ -31,19 +31,17 @@ export const authentication: Handle = async ({ event, resolve }) => {
 	);
 
 	return response;
-}
+};
 
 export const authorization: Handle = async ({ event, resolve }) => {
 	const { pathname } = event.url;
-
-	console.log("PATH => " + pathname)
 
 	// Define route patterns
 	const PUBLIC_ROUTES = ['/login'];
 	const PROTECTED_ROUTES = ['/admin', '/dashboard', '/profile'];
 
-	const isPublicRoute = PUBLIC_ROUTES.some(route => pathname.startsWith(route));
-	const isProtectedRoute = PROTECTED_ROUTES.some(route => pathname.startsWith(route));
+	const isPublicRoute = PUBLIC_ROUTES.some((route) => pathname.startsWith(route));
+	const isProtectedRoute = PROTECTED_ROUTES.some((route) => pathname.startsWith(route));
 	const isAuthenticated = !!event.locals.user;
 
 	// Handle authentication redirects
@@ -61,7 +59,7 @@ export const authorization: Handle = async ({ event, resolve }) => {
 	response.headers.append('x-auth-status', isAuthenticated ? '1' : '0');
 
 	return response;
-}
+};
 
 // Create a handle for checking page navigation
 export const navigationGuard: Handle = async ({ event, resolve }) => {
@@ -71,6 +69,6 @@ export const navigationGuard: Handle = async ({ event, resolve }) => {
 		return response;
 	}
 	return resolve(event);
-}
+};
 
 export const handle = sequence(authentication, authorization, navigationGuard);

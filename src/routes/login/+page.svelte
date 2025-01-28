@@ -7,7 +7,7 @@
 	export let form: ActionData;
 </script>
 
-<div class="flex min-h-screen items-center justify-center bg-gray-100">
+<div class="flex items-center justify-center pt-8">
 	<Card class="w-full max-w-md p-6">
 		<h1 class="mb-6 text-center text-2xl font-bold text-gray-900">Login</h1>
 

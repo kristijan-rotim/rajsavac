@@ -1,43 +1,31 @@
 import { DB_URL } from '$env/static/private';
+import { PUBLIC_CACHE_TIME } from '$env/static/public';
 import { pb } from '$lib';
 import { Cache } from '$lib/cache';
 
-const imageUrlCache = new Map<string, string>();
-const postsCache = new Cache<any>(300); // 5 minutes cache
+const postsCache = new Cache<any>(parseInt(PUBLIC_CACHE_TIME));
 const CACHE_KEY = 'all_posts';
 
 export const load = async () => {
-	// Try to get from cache first
 	const cachedPosts = postsCache.get(CACHE_KEY);
-	if (cachedPosts) {
-		console.log('cached posts', cachedPosts);
-		return {
-			posts: cachedPosts
-		};
-	}
+
+	if (cachedPosts) return { posts: cachedPosts };
 
 	try {
-		const resultList = await pb.collection('posts').getList(1, 50, {
-			sort: '-created'
-		});
+		const result = await pb.collection('posts').getList(1, 6, { sort: '-updated' });
 
-		const postsWithImages = resultList.items.map((post) => {
-			if (!post.cover) return { ...post, image: null };
+		const posts = result.items.map((post) => {
+			if (!post.cover) return { ...post, image: '/placeholder.png' };
 
-			const cacheKey = `${post.id}-${post.cover}`;
-
-			if (!imageUrlCache.has(cacheKey)) {
-				const imageUrl = `${DB_URL}/api/files/${post.collectionId}/${post.id}/${post.cover}`;
-				imageUrlCache.set(cacheKey, imageUrl);
-			}
+			const imageUrl = `${DB_URL}/api/files/${post.collectionId}/${post.id}/${post.cover}`;
 
 			return {
 				...post,
-				image: imageUrlCache.get(cacheKey)
+				image: imageUrl
 			};
 		});
 
-		const processedPosts = structuredClone(postsWithImages);
+		const processedPosts = structuredClone(posts);
 
 		// Store in cache
 		postsCache.set(CACHE_KEY, processedPosts);

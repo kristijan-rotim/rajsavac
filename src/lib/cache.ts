@@ -7,7 +7,7 @@ export class Cache<T> {
     private cache: Map<string, CacheItem<T>>;
     private readonly ttl: number;
 
-    constructor(ttlInSeconds: number = 300) { // 5 minutes default TTL
+    constructor(ttlInSeconds: number = 300) {
         this.cache = new Map();
         this.ttl = ttlInSeconds * 1000;
     }

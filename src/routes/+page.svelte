@@ -1,44 +1,67 @@
 <script lang="ts">
-    import { Card, Button } from "flowbite-svelte";
-    import { ArrowRightOutline } from "flowbite-svelte-icons";
-    import type { Post } from "$lib/types";
+	import { Card, Button, Carousel, Heading } from 'flowbite-svelte';
+	import { ArrowRightOutline } from 'flowbite-svelte-icons';
+	import type { Post } from '$lib/types';
 
-    export let data: {
-        posts: Post[];
-    };
+	export let data: {
+		posts: Post[];
+	};
+
+	let images = [
+		{
+			alt: 'First slide',
+			src: 'https://flowbite.com/docs/images/carousel/carousel-1.svg'
+		},
+		{
+			alt: 'Second slide',
+			src: 'https://flowbite.com/docs/images/carousel/carousel-2.svg'
+		},
+		{
+			alt: 'Third slide',
+			src: 'https://flowbite.com/docs/images/carousel/carousel-3.svg'
+		}
+	];
 </script>
 
-<h1 class="text-4xl font-bold mb-6 text-center">Welcome to Rajsavac</h1>
+<div>
+	<Carousel {images} let:Indicators>
+		<Indicators />
+	</Carousel>
+</div>
+
+<div class="p-8 text-center">
+	<Heading tag="h1" class="mb-4" customSize="text-4xl font-extrabold md:text-5xl lg:text-6xl"
+		>Novosti</Heading
+	>
+</div>
 
 {#if data.posts.length > 0}
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
-        {#each data.posts as post}
-            <Card>
-                {#if post.image}
-                    <img
-                        class="w-full h-48 object-cover rounded-t-lg"
-                        src={`${post.image}`}
-                        alt={post.title}
-                    />
-                {/if}
-                <h5
-                    class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white p-4"
-                >
-                    {post.title}
-                </h5>
-                <p class="font-normal text-gray-700 dark:text-gray-400 p-4">
-                    {post.shortDescription}
-                </p>
-                <Button class="w-fit">
-                    Procitaj vise <ArrowRightOutline
-                        class="w-6 h-6 ms-2 text-white"
-                    />
-                </Button>
-            </Card>
-        {/each}
-    </div>
+	<div class="mx-auto w-[70vw]">
+		<div class="grid grid-cols-1 gap-6 pb-8 md:grid-cols-2 lg:grid-cols-3">
+			{#each data.posts as post}
+				<Card class="h-[500px] w-full !max-w-none">
+					{#if post.image}
+						<img
+							class="h-64 w-full rounded-t-lg object-cover"
+							src={`${post.image}`}
+							alt={post.title}
+						/>
+					{/if}
+					<h5 class="p-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+						{post.title}
+					</h5>
+					<p class="p-4 font-normal text-gray-700 dark:text-gray-400">
+						{post.shortDescription}
+					</p>
+					<Button class="mt-auto w-fit">
+						Procitaj vise <ArrowRightOutline class="ms-2 h-6 w-6 text-white" />
+					</Button>
+				</Card>
+			{/each}
+		</div>
+	</div>
 {:else}
-    <div class="text-center p-8">
-        <p class="text-xl text-gray-600">Loading posts...</p>
-    </div>
+	<div class="p-8 text-center">
+		<p class="text-xl text-gray-600">Loading posts...</p>
+	</div>
 {/if}

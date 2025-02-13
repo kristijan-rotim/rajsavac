@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { Card, Button, Label, Input } from 'flowbite-svelte';
 	import type { ActionData } from './$types';
-	import { goto } from '$app/navigation';
-	import { enhance } from '$app/forms';
 
 	export let form: ActionData;
 </script>
@@ -14,13 +12,6 @@
 		<form
 			method="POST"
 			class="space-y-4"
-			use:enhance={() => {
-				return async ({ result }) => {
-					if (result.type === 'success') {
-						await goto('/admin');
-					}
-				};
-			}}
 		>
 			<div>
 				<Label for="email" class="mb-2">Email</Label>

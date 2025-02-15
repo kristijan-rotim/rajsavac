@@ -1,6 +1,5 @@
-import { fail, redirect } from '@sveltejs/kit';
+import { fail } from '@sveltejs/kit';
 import type { Actions } from './$types';
-import { pb } from '$lib';
 import { serializeNonPOJOs } from '$lib/utils';
 
 export const actions = {
@@ -10,21 +9,25 @@ export const actions = {
 		const password = data.get('password');
 
 		try {
-			// Attempt authentication via PocketBase
-			await pb.collection('users').authWithPassword(email as string, password as string);
-			
-			// Save authenticated user to locals for later use (e.g. hooks, load functions)
-			locals.user = serializeNonPOJOs(pb.authStore.record);
+			if (!locals?.pb) throw new Error('PocketBase client not initialized');
 
-			// Retrieve redirect destination from query parameters with a fallback to the home page
+			const authData = await locals.pb.collection('users').authWithPassword(
+				email as string,
+				password as string
+			);
+
+			if (!authData?.record) {
+				throw new Error('Authentication failed');
+			}
+
+			locals.user = serializeNonPOJOs(authData.record);
+			locals.pb.authStore.save(authData.token, authData.record);
+
 			const redirectTo = url.searchParams.get('redirectTo') || '/';
-			console.log('Login successful. Redirecting to:', redirectTo);
-			
-			// Throw a redirect so that SvelteKit performs the navigation
-			throw redirect(303, redirectTo);
-		} catch (err) {
-			console.error('Login failed:', err);
-			// Return a failure response if authentication fails
+
+			return { success: true, redirectTo };
+		} catch (error: any) {
+			console.error('Login failed:', error.message || error);
 			return fail(400, {
 				error: 'Invalid email or password',
 				email: email as string

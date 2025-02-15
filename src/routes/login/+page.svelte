@@ -1,18 +1,21 @@
 <script lang="ts">
 	import { Card, Button, Label, Input } from 'flowbite-svelte';
 	import type { ActionData } from './$types';
+	import { goto } from '$app/navigation';
+	import { browser } from '$app/environment';
 
 	export let form: ActionData;
+
+	$: if (browser && form?.success) {
+		goto(form.redirectTo);
+	}
 </script>
 
 <div class="flex items-center justify-center pt-8">
 	<Card class="w-full max-w-md p-6">
 		<h1 class="mb-6 text-center text-2xl font-bold text-gray-900">Login</h1>
 
-		<form
-			method="POST"
-			class="space-y-4"
-		>
+		<form method="POST" class="space-y-4">
 			<div>
 				<Label for="email" class="mb-2">Email</Label>
 				<Input

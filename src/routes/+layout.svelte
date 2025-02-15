@@ -1,5 +1,4 @@
 <script>
-	import { afterNavigate, invalidateAll } from '$app/navigation';
 	import '../app.css';
 	import {
 		Navbar,
@@ -11,13 +10,35 @@
 		FooterCopyright,
 		FooterLinkGroup,
 		FooterBrand,
-		FooterLink
+		FooterLink,
+		Avatar,
+		Dropdown,
+		DropdownItem
 	} from 'flowbite-svelte';
+	import { getStores } from '$app/stores';
+	import { goto } from '$app/navigation';
+
+	const { page } = getStores();
+
+	$: user = $page.data.user;
+	$: avatarUrl = $page.data.avatarUrl;
 
 	async function handleLogout() {
-		const res = await fetch('/api/auth/logout', { method: 'POST' });
-		if (res.ok) {
-			window.location.href = '/';
+		try {
+			const response = await fetch('/api/auth/logout', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			});
+
+			if (response.ok) {
+				await goto('/', { invalidateAll: true });
+				// Force page reload to ensure all auth states are cleared
+				window.location.href = '/';
+			}
+		} catch (err) {
+			console.error('Logout error:', err);
 		}
 	}
 </script>
@@ -26,14 +47,26 @@
 	<Navbar rounded color="form">
 		<NavBrand href="/">
 			<img src="/NK_Dinamo_Rajsavac.png" class="me-3 h-6 sm:h-9" alt="Rajsavac Logo" />
-			<span class="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Rajsavac</span>
+			<span class="self-center whitespace-nowrap text-xl font-semibold dark:text-white"
+				>Rajsavac</span
+			>
 		</NavBrand>
 		<NavHamburger />
-		<NavUl>
-			<NavLi href="/">Početna</NavLi>
-			<NavLi href="/dinamo-rajsavac">NK Dinamo Rajsavac</NavLi>
-			<NavLi href="/zelena-laguna">ŠRD Zelena laguna</NavLi>
-			<NavLi href="/podrum">Podrum</NavLi>
+		<NavUl class="h-full items-center">
+			<NavLi href="/" class="flex h-full items-center">Početna</NavLi>
+			<NavLi href="/dinamo-rajsavac" class="flex h-full items-center">NK Dinamo Rajsavac</NavLi>
+			<NavLi href="/zelena-laguna" class="flex h-full items-center">ŠRD Zelena laguna</NavLi>
+			<NavLi href="/podrum" class="flex h-full items-center">Podrum</NavLi>
+			{#if user}
+				<NavLi class="flex h-full items-center">
+					<Avatar id="user-drop" src={avatarUrl} alt="User settings" class="cursor-pointer" />
+					<Dropdown triggeredBy="#user-drop">
+						<DropdownItem href="/profile">Profile</DropdownItem>
+						<DropdownItem href="/settings">Settings</DropdownItem>
+						<DropdownItem on:click={handleLogout}>Sign out</DropdownItem>
+					</Dropdown>
+				</NavLi>
+			{/if}
 		</NavUl>
 	</Navbar>
 

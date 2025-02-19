@@ -11,5 +11,5 @@ jobs:
       - name: Build and push image
         run:
           docker login --username=kristijan-rotim --password=${{ secrets.GH_PAT }} ghcr.io
-          docker build -t ghcr.io/kristijan-rotim/rajsavac:latest .
+          docker build . --tag ghcr.io/kristijan-rotim/rajsavac:latest .
           docker push ghcr.io/kristijan-rotim/rajsavac:latest

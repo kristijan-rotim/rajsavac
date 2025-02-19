@@ -1,0 +1,69 @@
+services:
+  watchtower:
+    image: ghcr.io/containrrr/watchtower:latest
+    container_name: "watchtower"
+    command:
+      - "--interval"
+      - "300"
+      - "rajsavac"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ~/.docker/config.json:/config.json
+
+  traefik:
+    image: 'traefik:v3.3'
+    container_name: 'traefik'
+    command:
+      - '--api.insecure=true'
+      - '--providers.docker=true'
+      - "--providers.docker.exposedbydefault=false"
+      - "--entryPoints.websecure.address=:443"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.email=kristijan.rotim@icloud.com"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+    ports:
+      - '80:80'
+      - '443:443'
+      - '127.0.0.1:8080:8080'
+    volumes:
+      - letsencrypt:/letsencrypt
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  svelteApp:
+    image: ghcr.io/kristijan-rotim/rajsavac:latest
+    container_name: 'rajsavac'
+    ports:
+      - '3000:3000'
+    environment:
+      NODE_ENV: production
+      DB_URL: http://pocketbase:8090
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.guestbook.rule=Host(`rajsavac.space`)"
+      - "traefik.http.routers.guestbook.entrypoints=websecure"
+      - "traefik.http.routers.guestbook.tls.certresolver=myresolver"
+      - "com.centurylinklabs.watchtower.enable=true"
+    depends_on:
+      - pocketbase
+
+  pocketbase:
+    image: ghcr.io/muchobien/pocketbase:latest
+    container_name: pocketbase
+    restart: unless-stopped
+    user: "1000:1000"
+    ports:
+      - '127.0.0.1:8090:8090'
+    volumes:
+      - ./opt/pocketbase_data:/pb_data
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:8090/api/health || exit 1
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  letsencrypt:
+  pocketbase_public:

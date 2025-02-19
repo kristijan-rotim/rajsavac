@@ -10,6 +10,6 @@ jobs:
       - uses: actions/checkout@v3
       - name: Build and push image
         run: |
-          docker login --username=kristijan-rotim --password=${{ secrets.GH_PAT }} ghcr.io
+          docker login --username=kristijan-rotim --password=${{ secrets.GA_PAT }} ghcr.io
           docker build . --tag ghcr.io/kristijan-rotim/rajsavac:latest .
           docker push ghcr.io/kristijan-rotim/rajsavac:latest

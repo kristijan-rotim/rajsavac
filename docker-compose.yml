@@ -41,9 +41,9 @@ services:
       DB_URL: http://pocketbase:8090
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.guestbook.rule=Host(`rajsavac.space`)"
-      - "traefik.http.routers.guestbook.entrypoints=websecure"
-      - "traefik.http.routers.guestbook.tls.certresolver=myresolver"
+      - "traefik.http.routers.svelteApp.rule=Host(`rajsavac.space`)"
+      - "traefik.http.routers.svelteApp.entrypoints=websecure"
+      - "traefik.http.routers.svelteApp.tls.certresolver=myresolver"
       - "com.centurylinklabs.watchtower.enable=true"
     depends_on:
       - pocketbase

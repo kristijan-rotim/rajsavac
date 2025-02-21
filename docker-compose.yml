@@ -55,7 +55,7 @@ services:
     restart: unless-stopped
     user: "1000:1000"
     ports:
-      - '127.0.0.1:8090:8090'
+      - '8090:8090'
     volumes:
       - ./pb_data:/pb_data
     command:

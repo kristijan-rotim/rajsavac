@@ -1,19 +1,19 @@
 <script>
 	import '../app.css';
 	import {
-		Navbar,
-		NavBrand,
-		NavLi,
-		NavUl,
-		NavHamburger,
-		Footer,
-		FooterCopyright,
-		FooterLinkGroup,
-		FooterBrand,
-		FooterLink,
 		Avatar,
 		Dropdown,
-		DropdownItem
+		DropdownItem,
+		Footer,
+		FooterBrand,
+		FooterCopyright,
+		FooterLink,
+		FooterLinkGroup,
+		Navbar,
+		NavBrand,
+		NavHamburger,
+		NavLi,
+		NavUl
 	} from 'flowbite-svelte';
 	import { getStores } from '$app/stores';
 	import { goto } from '$app/navigation';
@@ -48,7 +48,7 @@
 		<NavBrand href="/">
 			<img src="/NK_Dinamo_Rajsavac.png" class="me-3 h-6 sm:h-9" alt="Rajsavac Logo" />
 			<span class="self-center whitespace-nowrap text-xl font-semibold dark:text-white"
-				>Rajsavac</span
+			>Rajsavac</span
 			>
 		</NavBrand>
 		<NavHamburger />
@@ -61,8 +61,8 @@
 				<NavLi class="flex h-full items-center">
 					<Avatar id="user-drop" src={avatarUrl} alt="User settings" class="cursor-pointer" />
 					<Dropdown triggeredBy="#user-drop">
-						<DropdownItem href="/profile">Profile</DropdownItem>
-						<DropdownItem href="/settings">Settings</DropdownItem>
+						<DropdownItem href="/admin">Profile</DropdownItem>
+						<DropdownItem href="/admin/settings">Settings</DropdownItem>
 						<DropdownItem on:click={handleLogout}>Sign out</DropdownItem>
 					</Dropdown>
 				</NavLi>

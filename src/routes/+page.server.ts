@@ -1,4 +1,3 @@
-import { DB_URL } from '$env/static/private';
 import { PUBLIC_CACHE_TIME } from '$env/static/public';
 import { pb } from '$lib';
 import { Cache } from '$lib/cache';
@@ -17,7 +16,7 @@ export const load = async () => {
 		const posts = result.items.map((post) => {
 			if (!post.cover) return { ...post, image: '/placeholder.png' };
 
-			const imageUrl = `${DB_URL}/api/files/${post.collectionId}/${post.id}/${post.cover}`;
+			const imageUrl = `/api/images/${post.collectionId}/${post.id}/${post.cover}`;
 
 			return {
 				...post,
@@ -27,7 +26,6 @@ export const load = async () => {
 
 		const processedPosts = structuredClone(posts);
 
-		// Store in cache
 		postsCache.set(CACHE_KEY, processedPosts);
 
 		return {

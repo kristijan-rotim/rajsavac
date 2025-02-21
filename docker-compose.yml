@@ -39,7 +39,6 @@ services:
       - '5173:5173'
     environment:
       DB_URL: http://pocketbase:8090
-      ORIGIN: https://rajsavac.space
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.svelteApp.rule=Host(`rajsavac.space`)"

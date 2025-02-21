@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Card, Button } from 'flowbite-svelte';
+	import { Button, Card } from 'flowbite-svelte';
 	import { ArrowRightOutline } from 'flowbite-svelte-icons';
 	import type { Post } from '$lib/types';
 
@@ -13,9 +13,9 @@
 				<Card class="h-[500px] w-full !max-w-none">
 					{#if post.image}
 						<img
-							class="h-64 w-full rounded-t-lg object-cover"
-							src={`${post.image}`}
-							alt={post.title}
+						  class="h-64 w-full rounded-t-lg object-cover"
+						  src={`${post.image}`}
+						  alt={post.title}
 						/>
 					{/if}
 					<h5 class="p-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
@@ -25,7 +25,8 @@
 						{post.shortDescription}
 					</p>
 					<Button class="mt-auto w-fit">
-						Procitaj vise <ArrowRightOutline class="ms-2 h-6 w-6 text-white" />
+						Procitaj vise
+						<ArrowRightOutline class="ms-2 h-6 w-6 text-white" />
 					</Button>
 				</Card>
 			{/each}

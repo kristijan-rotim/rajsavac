@@ -28,9 +28,7 @@
 </Carousel>
 
 <div class="p-8 text-center">
-	<Heading tag="h1" class="mb-4" customSize="text-4xl font-extrabold md:text-5xl lg:text-6xl"
-		>Novosti</Heading
-	>
+	<Heading tag="h1" class="mb-4" customSize="text-4xl font-extrabold md:text-5xl lg:text-6xl">Novosti</Heading>
 </div>
 
 <PostGrid posts={data.posts} />

@@ -1,16 +1,28 @@
-FROM node:22-alpine AS builder
-
+# Stage 1: Build the application
+FROM node:20-alpine AS builder
 WORKDIR /app
 
-COPY package*.json .
-COPY *config.js .
-
+# Copy package files and install dependencies
+COPY package*.json ./
 RUN npm install
 
+# Copy source files and build
 COPY . .
+RUN npm run build
 
+# Stage 2: Production environment
+FROM node:20-alpine AS production
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+# Copy package files and install production dependencies
+COPY package*.json ./
+RUN npm install --omit=dev
+
+# Copy built assets from builder
+COPY --from=builder /app/build ./build
+
+# Expose and run
 EXPOSE 5173
-
-ENV HOST=0.0.0.0
-
-CMD [ "npm", "run", "dev", "--", "--host", "0.0.0.0"]
+CMD ["node", "build/index.js"]

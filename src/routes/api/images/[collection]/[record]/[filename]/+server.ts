@@ -1,4 +1,4 @@
-import { DB_URL } from '$env/static/private';
+import { DB_URL } from '$env/dynamic/private';
 import type { RequestHandler } from '@sveltejs/kit';
 import { error } from '@sveltejs/kit';
 

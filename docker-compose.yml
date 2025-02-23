@@ -42,9 +42,13 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.svelteApp.rule=Host(`rajsavac.space`)"
+      - "traefik.http.middlewares.svelteApp-headers.headers.customrequestheaders.Host=rajsavac.space"
       - "traefik.http.routers.svelteApp.entrypoints=websecure"
       - "traefik.http.routers.svelteApp.tls.certresolver=myresolver"
+      - "traefik.http.routers.svelteApp.tls=true"
+      - "traefik.http.middlewares.svelteApp-headers.headers.customrequestheaders.X-Forwarded-Proto=https"
       - "com.centurylinklabs.watchtower.enable=true"
+      - "traefik.http.routers.sveltekit-app.middlewares=svelteApp-headers"
     depends_on:
       - pocketbase
 

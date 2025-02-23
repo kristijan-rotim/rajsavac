@@ -1,29 +1,26 @@
-# Stage 1: Build the application
-FROM node:20-alpine AS builder
-WORKDIR /app
+FROM node:20-alpine AS sk-build
+WORKDIR /usr/src/app
 
-# Copy package files and install dependencies
-COPY package*.json ./
+ARG TZ=Europe/Berlin
+
+COPY . /usr/src/app
+RUN apk --no-cache add curl tzdata
+RUN cp /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN npm install
-
-# Copy source files and build
-COPY . .
 RUN npm run build
 
-# Stage 2: Production environment
-FROM node:20-alpine AS production
-WORKDIR /app
+FROM node:20-alpine
+WORKDIR /usr/src/app
 
-ENV NODE_ENV=production
-ENV PORT=5173
+ARG TZ=Europe/Berlin
+RUN apk --no-cache add curl tzdata
+RUN cp /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# Copy package files and install production dependencies
-COPY package*.json ./
-RUN npm install --omit=dev
+COPY --from=sk-build /usr/src/app/package.json /usr/src/app/package.json
+COPY --from=sk-build /usr/src/app/package-lock.json /usr/src/app/package-lock.json
+RUN npm i --only=production
 
-# Copy built assets from builder
-COPY --from=builder /app/build ./build
+COPY --from=sk-build /usr/src/app/build /usr/src/app/build
 
-# Expose and run
 EXPOSE 5173
 CMD ["node", "build/index.js"]

@@ -30,6 +30,7 @@ WORKDIR /app
 # Set runtime environment variables
 ENV DB_URL=${DB_URL}
 ENV PUBLIC_CACHE_TIME=${PUBLIC_CACHE_TIME}
+ENV NODE_ENV=production
 
 # Copy only production dependencies and built files
 COPY --from=builder /app/package*.json .
@@ -38,7 +39,7 @@ COPY --from=builder /app/build ./build
 # Install ONLY production dependencies
 RUN npm install --omit=dev
 
-EXPOSE 5173
+EXPOSE 3000
 
-# Start the production server (for @sveltejs/adapter-node)
+# Start the production server
 CMD ["node", "build"]

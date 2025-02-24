@@ -4,16 +4,17 @@ import { Cache } from '$lib/cache';
 
 const ttl = env.PUBLIC_CACHE_TIME;
 
-const postsCache = new Cache<any>(parseInt(ttl));
-const CACHE_KEY = 'all_posts';
+const pageCache = new Cache<any>(parseInt(ttl));
+const CACHE_KEY = 'page_data';
 
 export const load = async () => {
-	const cachedPosts = postsCache.get(CACHE_KEY);
+	const cachedData = pageCache.get(CACHE_KEY);
 
-	if (cachedPosts) return { posts: cachedPosts };
+	if (cachedData) return cachedData;
 
 	try {
 		const result = await pb.collection('posts').getList(1, 6, { sort: '-updated' });
+		const carouselResult = await pb.collection('carousel').getList(1, 3, { sort: '-updated' });
 
 		const posts = result.items.map((post) => {
 			if (!post.cover) return { ...post, image: '/placeholder.png' };
@@ -26,17 +27,30 @@ export const load = async () => {
 			};
 		});
 
-		const processedPosts = structuredClone(posts);
+		const carouselImages = carouselResult.items
+			.map((item) => {
+				if (!item.image) return null;
 
-		postsCache.set(CACHE_KEY, processedPosts);
+				return {
+					alt: 'test',
+					src: `/api/images/${item.collectionId}/${item.id}/${item.image}`
+				};
+			})
+			.filter(Boolean);
 
-		return {
-			posts: processedPosts
+		const pageData = {
+			posts: structuredClone(posts),
+			carouselImages: carouselImages
 		};
+
+		pageCache.set(CACHE_KEY, pageData);
+
+		return pageData;
 	} catch (err) {
 		console.error('Error fetching records:', err);
 		return {
-			posts: []
+			posts: [],
+			carouselImages: []
 		};
 	}
 };

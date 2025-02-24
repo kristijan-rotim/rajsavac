@@ -6,11 +6,7 @@ const config = {
 	preprocess: vitePreprocess(),
 
 	kit: {
-		adapter: adapter(),
-		// Remove any existing origin configuration if present
-		csrf: {
-			checkOrigin: false // This allows the app to work behind a proxy
-		}
+		adapter: adapter()
 	}
 };
 

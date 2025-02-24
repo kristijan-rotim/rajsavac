@@ -12,6 +12,7 @@ ENV PUBLIC_CACHE_TIME=${PUBLIC_CACHE_TIME}
 COPY package*.json .
 COPY svelte.config.js .
 COPY vite.config.ts .
+COPY tsconfig.json .
 
 # Install dependencies (including devDependencies for building)
 RUN npm install
@@ -19,7 +20,7 @@ RUN npm install
 COPY . .
 
 # Build the app for production
-RUN npm run build
+RUN npm run sync && npm run build  # Add sync command
 
 # Stage 2: Run the app
 FROM node:22-alpine

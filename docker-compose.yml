@@ -33,12 +33,16 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   svelteApp:
+    build:
+      context: .
+      args:
+        - DB_URL=http://pocketbase:8090
     image: ghcr.io/kristijan-rotim/rajsavac:latest
     container_name: 'rajsavac'
     ports:
       - '5173:5173'
     environment:
-      DB_URL: http://localhost:8090
+      DB_URL: http://pocketbase:8090
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.svelteApp.rule=Host(`rajsavac.space`)"

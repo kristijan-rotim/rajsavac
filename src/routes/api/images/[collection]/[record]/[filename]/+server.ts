@@ -1,12 +1,13 @@
-import { DB_URL } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 import type { RequestHandler } from '@sveltejs/kit';
 import { error } from '@sveltejs/kit';
 
 export const GET: RequestHandler = async ({ params }) => {
 	const { collection, record, filename } = params;
+	const dbUrl = env.DB_URL;
 
 	try {
-		const response = await fetch(`${DB_URL}/api/files/${collection}/${record}/${filename}`);
+		const response = await fetch(`${dbUrl}/api/files/${collection}/${record}/${filename}`);
 
 		if (!response.ok) throw error(response.status, 'Image not found');
 

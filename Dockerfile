@@ -3,6 +3,10 @@ FROM node:22-alpine AS builder
 
 WORKDIR /app
 
+# Add build arguments
+ARG DB_URL
+ENV DB_URL=${DB_URL}
+
 COPY package*.json .
 COPY svelte.config.js .
 COPY vite.config.ts .
@@ -19,6 +23,9 @@ RUN npm run build
 FROM node:22-alpine
 
 WORKDIR /app
+
+# Set runtime environment variables
+ENV DB_URL=${DB_URL}
 
 # Copy only production dependencies and built files
 COPY --from=builder /app/package*.json .

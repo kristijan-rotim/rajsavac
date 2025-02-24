@@ -5,7 +5,9 @@ WORKDIR /app
 
 # Add build arguments
 ARG DB_URL
+ARG PUBLIC_CACHE_TIME=60
 ENV DB_URL=${DB_URL}
+ENV PUBLIC_CACHE_TIME=${PUBLIC_CACHE_TIME}
 
 COPY package*.json .
 COPY svelte.config.js .
@@ -26,6 +28,7 @@ WORKDIR /app
 
 # Set runtime environment variables
 ENV DB_URL=${DB_URL}
+ENV PUBLIC_CACHE_TIME=${PUBLIC_CACHE_TIME}
 
 # Copy only production dependencies and built files
 COPY --from=builder /app/package*.json .

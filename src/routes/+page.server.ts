@@ -1,8 +1,10 @@
-import { PUBLIC_CACHE_TIME } from '$env/static/public';
+import { env } from '$env/dynamic/public';
 import { pb } from '$lib';
 import { Cache } from '$lib/cache';
 
-const postsCache = new Cache<any>(parseInt(PUBLIC_CACHE_TIME));
+const ttl = env.PUBLIC_CACHE_TIME;
+
+const postsCache = new Cache<any>(parseInt(ttl));
 const CACHE_KEY = 'all_posts';
 
 export const load = async () => {

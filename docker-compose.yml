@@ -39,8 +39,9 @@ services:
         - DB_URL=http://pocketbase:8090
     image: ghcr.io/kristijan-rotim/rajsavac:latest
     container_name: 'rajsavac'
-    ports:
-      - '5173:5173'
+    # Remove or comment out the ports section since Traefik handles the routing
+    # ports:
+    #   - '5173:5173'
     environment:
       DB_URL: http://pocketbase:8090
     labels:
@@ -48,6 +49,7 @@ services:
       - "traefik.http.routers.svelteApp.rule=Host(`rajsavac.space`)"
       - "traefik.http.routers.svelteApp.entrypoints=websecure"
       - "traefik.http.routers.svelteApp.tls.certresolver=myresolver"
+      - "traefik.http.services.svelteApp.loadbalancer.server.port=5173"
       - "com.centurylinklabs.watchtower.enable=true"
     depends_on:
       - pocketbase

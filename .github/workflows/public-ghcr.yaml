@@ -12,7 +12,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Build and push image
+        env:
+          DB_URL: ${{ secrets.DB_URL }}
         run: |
           docker login --username=kristijan-rotim --password=${{ secrets.GA_PAT }} ghcr.io
-          docker build . --tag ghcr.io/kristijan-rotim/rajsavac:latest
+          docker build . --build-arg DB_URL=${DB_URL} --tag ghcr.io/kristijan-rotim/rajsavac:latest
           docker push ghcr.io/kristijan-rotim/rajsavac:latest

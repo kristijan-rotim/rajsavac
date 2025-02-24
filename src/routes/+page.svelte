@@ -27,8 +27,11 @@
 	<Indicators />
 </Carousel>
 
-<div class="p-8 text-center">
-	<Heading tag="h1" class="mb-4" customSize="text-4xl font-extrabold md:text-5xl lg:text-6xl">Nove vijesti</Heading>
+<div>
+	<Heading tag="h1">Tablica</Heading>
 </div>
 
-<PostGrid posts={data.posts} />
+<div class="p-8 text-center">
+	<Heading tag="h1" class="mb-4" customSize="text-4xl font-extrabold md:text-5xl lg:text-6xl">Nove vijesti</Heading>
+	<PostGrid posts={data.posts} />
+</div>

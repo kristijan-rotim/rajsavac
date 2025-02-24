@@ -41,18 +41,19 @@ export const authorization: Handle = async ({ event, resolve }) => {
 	const isProtectedRoute = PROTECTED_ROUTES.some((route) => pathname.startsWith(route));
 	const isAuthenticated = Boolean(event.locals.user);
 
-	// No need for login if already authenticated
-	if (isPublicRoute && isAuthenticated) {
-		throw redirect(303, '/');
-	}
-
 	if (isProtectedRoute && !isAuthenticated) {
 		const fromUrl = event.url.pathname + event.url.search;
 		throw redirect(303, `/login?redirectTo=${encodeURIComponent(fromUrl)}`);
 	}
 
+	// Only redirect away from public routes if authenticated
+	if (isPublicRoute && isAuthenticated && pathname === '/login') {
+		const redirectTo = event.url.searchParams.get('redirectTo') || '/';
+		throw redirect(303, redirectTo);
+	}
+
 	const response = await resolve(event);
-	response.headers.append('x-auth-status', isAuthenticated ? '1' : '0');
+	response.headers.set('x-auth-status', isAuthenticated ? '1' : '0');
 
 	return response;
 };

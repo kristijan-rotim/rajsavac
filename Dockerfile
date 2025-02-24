@@ -1,15 +1,7 @@
-FROM node:22-alpine AS builder
-
+FROM node:20-alpine
 WORKDIR /app
-
 COPY package*.json .
-COPY *config.js .
-COPY *.config.js .
-
-RUN npm install
-
+RUN npm ci --omit=dev  # Install production dependencies only
 COPY . .
-
-EXPOSE 5173
-
-CMD [ "npm", "run", "dev", "--", "--host", "0.0.0.0"]
+RUN npm run build      # Build the SvelteKit app
+CMD ["node", "build"]

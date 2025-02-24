@@ -14,7 +14,7 @@
 		"lint": "prettier --check ."
 	},
 	"devDependencies": {
-		"@sveltejs/kit": "^2.17.2",
+		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^5.0.3",
 		"@tailwindcss/typography": "^0.5.16",
 		"@types/node": "^22.13.5",
@@ -32,7 +32,7 @@
 		"vite": "^6.1.1"
 	},
 	"dependencies": {
-		"@sveltejs/adapter-node": "^5.2.12",
+		"@sveltejs/adapter-node": "^5.0.0",
 		"pocketbase": "^0.25.1"
 	}
 }

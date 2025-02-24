@@ -20,7 +20,7 @@ RUN npm install
 COPY . .
 
 # Build the app for production
-RUN npm run sync && npm run build  # Add sync command
+RUN npm run prepare && npm run build
 
 # Stage 2: Run the app
 FROM node:22-alpine

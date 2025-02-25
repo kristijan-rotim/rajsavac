@@ -3,7 +3,7 @@ import { Cache } from '$lib/cache';
 import type { RequestHandler } from './$types';
 import { json } from '@sveltejs/kit';
 
-const footballCache = new Cache(300);
+const footballCache = new Cache(1);
 const CACHE_KEY = 'football_teams';
 
 export const GET: RequestHandler = async () => {

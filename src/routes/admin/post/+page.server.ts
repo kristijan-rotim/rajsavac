@@ -10,6 +10,7 @@ export const actions = {
             const pbFormData = new FormData();
             pbFormData.append('title', formData.get('title') as string);
             pbFormData.append('cover', coverFile);
+            pbFormData.append('topicId', '58v8k3sl2u964w7');
             pbFormData.append('shortDescription', formData.get('shortDescription') as string);
 
             const record = await pb.collection('posts').create(pbFormData);

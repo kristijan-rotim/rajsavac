@@ -4,11 +4,34 @@
 	import type { Post } from '$lib/types';
 
 	export let posts: Post[];
-
-	function truncateText(text: string, length: number) {
-		return text.length > length ? `${text.slice(0, length)}...` : text;
-	}
 </script>
+
+<style>
+    .description {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 100%;
+    }
+
+    @media (max-width: 640px) {
+        .description {
+            max-width: 50ch;
+        }
+    }
+
+    @media (min-width: 641px) and (max-width: 768px) {
+        .description {
+            max-width: 100ch;
+        }
+    }
+
+    @media (min-width: 769px) {
+        .description {
+            max-width: 150ch;
+        }
+    }
+</style>
 
 {#if posts.length > 0}
 	<div class="mx-auto w-[70vw]">
@@ -25,13 +48,8 @@
 					<h5 class="p-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
 						{post.title}
 					</h5>
-					<p class="p-4 font-normal text-gray-700 dark:text-gray-400">
-						{@html `
-        <span class="sm:hidden">${truncateText(post.shortDescription, 100)}</span>
-        <span class="hidden sm:inline md:hidden">${truncateText(post.shortDescription, 150)}</span>
-        <span class="hidden md:inline lg:hidden">${truncateText(post.shortDescription, 120)}</span>
-        <span class="hidden lg:inline">${truncateText(post.shortDescription, 200)}</span>
-      `}
+					<p class="description p-4 font-normal text-gray-700 dark:text-gray-400">
+						{post.shortDescription}
 					</p>
 					<Button class="mt-auto w-fit">
 						Procitaj vise
@@ -42,7 +60,7 @@
 		</div>
 	</div>
 {:else}
-	<div class="p-8 text-center">
-		<p class="text-xl text-gray-600">Loading posts...</p>
-	</div>
 {/if}
+<div class="p-8 text-center">
+	<p class="text-xl text-gray-600">Loading posts...</p>
+</div>

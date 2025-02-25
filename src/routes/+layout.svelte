@@ -77,7 +77,7 @@
 	<Footer footerType="logo">
 		<div class="sm:flex sm:items-center sm:justify-between">
 			<FooterBrand
-				href="https://rajsavac.vercel.app"
+				href="https://rajsavac.space"
 				src="/NK_Dinamo_Rajsavac.png"
 				alt="Rajsavac Logo"
 				name="Rajsavac"

@@ -22,7 +22,7 @@ export const authentication: Handle = async ({ event, resolve }) => {
 
 	try {
 		if (event.locals.pb.authStore.isValid) {
-			event.locals.user = serializeNonPOJOs(event.locals.pb.authStore.model);
+			event.locals.user = serializeNonPOJOs(event.locals.pb.authStore.record);
 		}
 	} catch (error) {
 		console.error('Error during authentication:', error);

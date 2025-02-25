@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { Carousel, Heading, P, Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell } from 'flowbite-svelte';
+	import { Carousel, Heading } from 'flowbite-svelte';
 	import PostGrid from '../lib/components/PostGrid.svelte';
 	import type { CarouselImages, FootballTeam, Post } from '$lib/types';
+	import FootballTable from '$lib/components/FootballTable.svelte';
 
 	export let data: {
 		posts: Post[];
@@ -66,52 +67,16 @@
 		},
 		{ position: 12, club: 'Graničar (B)', matches: 13, wins: 1, draws: 1, losses: 11, goalsFor: 5, goalsAgainst: 63, goalDiff: -58, points: 4 }
 	];
-
-	const tableHeaders = ['#', 'Klub', 'O', 'P', 'N', 'I', 'GR', 'B'] as const;
-	const legendItems = [
-		{ abbr: 'O', full: 'Odigrano' },
-		{ abbr: 'P', full: 'Pobjede' },
-		{ abbr: 'N', full: 'Neriješeno' },
-		{ abbr: 'I', full: 'Izgubljeno' },
-		{ abbr: 'GR', full: 'Gol razlika' },
-		{ abbr: 'B', full: 'Bodovi' }
-	] as const;
 </script>
 
-<Carousel images={data.carouselImages.map(img => ({ src: img.src, alt: img.alt }))} let:Indicators>
-	<Indicators />
-</Carousel>
+<div class="max-w-4xl">
+	<Carousel images={data.carouselImages.map(img => ({ src: img.src, alt: img.alt }))} let:Indicators>
+		<Indicators />
+	</Carousel>
+</div>
 
 <div class="pt-16">
-	<Heading tag="h1" class="text-center">Tablica</Heading>
-	<div class="max-w-4xl mx-auto px-4">
-		<Table striped={true} hoverable={true}>
-			<TableHead>
-				{#each tableHeaders as header}
-					<TableHeadCell>{header}</TableHeadCell>
-				{/each}
-			</TableHead>
-			<TableBody>
-				{#each footballData as { position, club, matches, wins, draws, losses, goalDiff, points }}
-					<TableBodyRow>
-						<TableBodyCell>{position}</TableBodyCell>
-						<TableBodyCell>{club}</TableBodyCell>
-						<TableBodyCell>{matches}</TableBodyCell>
-						<TableBodyCell>{wins}</TableBodyCell>
-						<TableBodyCell>{draws}</TableBodyCell>
-						<TableBodyCell>{losses}</TableBodyCell>
-						<TableBodyCell>{goalDiff}</TableBodyCell>
-						<TableBodyCell>{points}</TableBodyCell>
-					</TableBodyRow>
-				{/each}
-			</TableBody>
-		</Table>
-		<div class="mt-4 flex flex-wrap gap-4">
-			{#each legendItems as { abbr, full }}
-				<P color="text-gray-500" size="sm">{abbr} - {full}</P>
-			{/each}
-		</div>
-	</div>
+	<FootballTable {footballData} />
 </div>
 
 <div class="pt-16 text-center">

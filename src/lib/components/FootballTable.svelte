@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { Heading, P, Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell } from 'flowbite-svelte';
-	import type { FootballTeam } from '$lib/types';
-
-	export let footballData: FootballTeam[];
+	import { onMount } from 'svelte';
+	import { footballStore } from '$lib/stores/football';
 
 	const tableHeaders = ['#', 'Klub', 'O', 'P', 'N', 'I', 'GR', 'B'] as const;
 	const legendItems = [
@@ -13,6 +12,10 @@
 		{ abbr: 'GR', full: 'Gol razlika' },
 		{ abbr: 'B', full: 'Bodovi' }
 	] as const;
+
+	onMount(() => {
+		footballStore.load();
+	});
 </script>
 
 <div class="pt-16">
@@ -25,7 +28,7 @@
 				{/each}
 			</TableHead>
 			<TableBody>
-				{#each footballData as { position, club, matches, wins, draws, losses, goalDiff, points }}
+				{#each $footballStore as { position, club, matches, wins, draws, losses, goalDiff, points }}
 					<TableBodyRow>
 						<TableBodyCell>{position}</TableBodyCell>
 						<TableBodyCell>{club}</TableBodyCell>

@@ -1,13 +1,14 @@
 import { env } from '$env/dynamic/public';
 import { pb } from '$lib';
 import { Cache } from '$lib/cache';
+import type { PageLoad } from '../../.svelte-kit/types/src/routes/admin/$types';
 
 const ttl = env.PUBLIC_CACHE_TIME;
 
 const pageCache = new Cache<any>(parseInt(ttl));
 const CACHE_KEY = 'page_data';
 
-export const load = async () => {
+export const load: PageLoad = async () => {
 	const cachedData = pageCache.get(CACHE_KEY);
 
 	if (cachedData) return cachedData;
@@ -40,7 +41,7 @@ export const load = async () => {
 
 		const pageData = {
 			posts: structuredClone(posts),
-			carouselImages: carouselImages
+			carouselImages
 		};
 
 		pageCache.set(CACHE_KEY, pageData);

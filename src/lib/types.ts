@@ -12,6 +12,7 @@ export interface CarouselImages {
 }
 
 export interface FootballTeam {
+	id: string;
 	position: number;
 	club: string;
 	matches: number;

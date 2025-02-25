@@ -22,7 +22,7 @@
 						{post.title}
 					</h5>
 					<p class="p-4 font-normal text-gray-700 dark:text-gray-400">
-						{post.shortDescription}
+						{post.shortDescription.length > 200 ? `${post.shortDescription.slice(0, 200)}...` : post.shortDescription}
 					</p>
 					<Button class="mt-auto w-fit">
 						Procitaj vise

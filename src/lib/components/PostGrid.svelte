@@ -4,6 +4,10 @@
 	import type { Post } from '$lib/types';
 
 	export let posts: Post[];
+
+	function truncateText(text: string, length: number) {
+		return text.length > length ? `${text.slice(0, length)}...` : text;
+	}
 </script>
 
 {#if posts.length > 0}
@@ -22,7 +26,12 @@
 						{post.title}
 					</h5>
 					<p class="p-4 font-normal text-gray-700 dark:text-gray-400">
-						{post.shortDescription.length > 150 ? `${post.shortDescription.slice(0, 150)}...` : post.shortDescription}
+						{@html `
+        <span class="sm:hidden">${truncateText(post.shortDescription, 100)}</span>
+        <span class="hidden sm:inline md:hidden">${truncateText(post.shortDescription, 150)}</span>
+        <span class="hidden md:inline lg:hidden">${truncateText(post.shortDescription, 120)}</span>
+        <span class="hidden lg:inline">${truncateText(post.shortDescription, 200)}</span>
+      `}
 					</p>
 					<Button class="mt-auto w-fit">
 						Procitaj vise

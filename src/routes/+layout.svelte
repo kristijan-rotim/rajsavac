@@ -61,8 +61,10 @@
 				<NavLi class="flex h-full items-center">
 					<Avatar id="user-drop" src={avatarUrl} alt="User settings" class="cursor-pointer" />
 					<Dropdown triggeredBy="#user-drop">
-						<DropdownItem href="/admin">Profile</DropdownItem>
-						<DropdownItem href="/admin/settings">Settings</DropdownItem>
+						<DropdownItem href="/admin">Profil</DropdownItem>
+						<DropdownItem href="/admin/settings">Postavke</DropdownItem>
+						<DropdownItem href="/admin/post">Kreiraj clanak</DropdownItem>
+						<DropdownItem href="/admin/football">Azuriraj tablicu</DropdownItem>
 						<DropdownItem on:click={handleLogout}>Sign out</DropdownItem>
 					</Dropdown>
 				</NavLi>
@@ -77,13 +79,13 @@
 	<Footer footerType="logo">
 		<div class="sm:flex sm:items-center sm:justify-between">
 			<FooterBrand
-				href="https://rajsavac.space"
-				src="/NK_Dinamo_Rajsavac.png"
-				alt="Rajsavac Logo"
-				name="Rajsavac"
+			  href="https://rajsavac.space"
+			  src="/NK_Dinamo_Rajsavac.png"
+			  alt="Rajsavac Logo"
+			  name="Rajsavac"
 			/>
 			<FooterLinkGroup
-				ulClass="flex flex-wrap items-center mb-6 text-sm text-gray-500 sm:mb-0 dark:text-gray-400"
+			  ulClass="flex flex-wrap items-center mb-6 text-sm text-gray-500 sm:mb-0 dark:text-gray-400"
 			>
 				<FooterLink href="/">About</FooterLink>
 				<FooterLink href="/">Privacy Policy</FooterLink>

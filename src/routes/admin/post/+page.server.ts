@@ -1,4 +1,4 @@
-import { pb } from '$lib/index';
+import { pb } from '$lib';
 import type { Actions } from './$types';
 
 export const actions = {

@@ -5,7 +5,7 @@ import type { PageLoad } from '../../.svelte-kit/types/src/routes/admin/$types';
 
 const ttl = env.PUBLIC_CACHE_TIME;
 
-const pageCache = new Cache<any>(parseInt(ttl));
+const pageCache = new Cache<any>(1);
 const CACHE_KEY = 'page_data';
 
 export const load: PageLoad = async () => {

@@ -14,10 +14,13 @@ export const load: PageLoad = async () => {
 	if (cachedData) return cachedData;
 
 	try {
-		const result = await pb.collection('posts').getList(1, 6, { sort: '-updated' });
+		const postsResult = await pb.collection('posts').getList(1, 6, {
+			sort: '-updated',
+			filter: 'isPublic = true'
+		});
 		const carouselResult = await pb.collection('carousel').getList(1, 3, { sort: '-updated' });
 
-		const posts = result.items.map((post) => {
+		const posts = postsResult.items.map((post) => {
 			if (!post.cover) return { ...post, cover: '/placeholder.png' };
 
 			const imageUrl = `/api/images/${post.collectionId}/${post.id}/${post.cover}`;

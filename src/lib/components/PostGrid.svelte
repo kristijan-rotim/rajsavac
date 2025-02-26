@@ -59,7 +59,8 @@
 			{/each}
 		</div>
 	</div>
+{:else}
+	<div class="p-8 text-center">
+		<p class="text-xl text-gray-600">Loading posts...</p>
+	</div>
 {/if}
-<div class="p-8 text-center">
-	<p class="text-xl text-gray-600">Loading posts...</p>
-</div>

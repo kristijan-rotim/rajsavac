@@ -13,8 +13,8 @@ export const load: PageServerLoad = async ({ fetch }) => {
 		]);
 
 		return {
-			posts: postsData?.items ?? [],
-			carouselImages: carouselData?.items ?? []
+			posts: postsData?.posts,
+			carouselImages: carouselData?.carousel
 		};
 	} catch (err) {
 		console.error('Error fetching data:', err);

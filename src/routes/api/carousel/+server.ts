@@ -9,7 +9,7 @@ export const GET: RequestHandler = async () => {
 			sort: '-updated'
 		});
 
-		const items: CarouselImages[] = carouselResult.items
+		const carousel: CarouselImages[] = carouselResult.items
 			.map((item): CarouselImages | null => {
 				if (!item.image) return null;
 
@@ -21,7 +21,7 @@ export const GET: RequestHandler = async () => {
 			})
 			.filter((item): item is CarouselImages => item !== null);
 
-		return json({ items: items });
+		return json({ carousel });
 	} catch (err) {
 		return json([], { status: 500 });
 	}

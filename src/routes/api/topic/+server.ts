@@ -7,14 +7,16 @@ export const GET: RequestHandler = async ({ url }) => {
 		const name = url.searchParams.get('name');
 
 		if (!name) {
-			return json({ item: null }, { status: 400 });
+			return json({ topic: null }, { status: 400 });
 		}
 
-		const topic = await pb.collection('topic').getFirstListItem(`name = '${name}'`);
+		const topic = await pb.collection('topic').getFirstListItem(`name = '${name}'`, {
+			fields: 'id,name'
+		});
 
 		return json({ topic });
 	} catch (err) {
 		console.error('Error fetching topic:', err);
-		return json({ item: null }, { status: 404 });
+		return json({ topic: null }, { status: 404 });
 	}
 };

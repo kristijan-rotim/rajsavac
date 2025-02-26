@@ -3,10 +3,16 @@ export interface Post {
 	title: string;
 	shortDescription: string;
 	cover: string | null;
-	collectionId: string;
+	topicId: string | null;
+}
+
+export interface Topic {
+	id: string;
+	name: string;
 }
 
 export interface CarouselImages {
+	id: string;
 	alt: string;
 	src: string;
 }

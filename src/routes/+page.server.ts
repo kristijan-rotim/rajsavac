@@ -1,57 +1,23 @@
-import { env } from '$env/dynamic/public';
-import { pb } from '$lib';
-import { Cache } from '$lib/cache';
-import type { PageLoad } from '../../.svelte-kit/types/src/routes/admin/$types';
+import type { PageServerLoad } from './$types';
 
-const ttl = env.PUBLIC_CACHE_TIME;
-
-const pageCache = new Cache<any>(1);
-const CACHE_KEY = 'page_data';
-
-export const load: PageLoad = async () => {
-	const cachedData = pageCache.get(CACHE_KEY);
-
-	if (cachedData) return cachedData;
-
+export const load: PageServerLoad = async ({ fetch }) => {
 	try {
-		const postsResult = await pb.collection('posts').getList(1, 6, {
-			sort: '-updated',
-			filter: 'isPublic = true'
-		});
-		const carouselResult = await pb.collection('carousel').getList(1, 3, { sort: '-updated' });
+		const [postsResponse, carouselResponse] = await Promise.all([
+			fetch('/api/post'),
+			fetch('/api/carousel')
+		]);
 
-		const posts = postsResult.items.map((post) => {
-			if (!post.cover) return { ...post, cover: '/placeholder.png' };
+		const [postsData, carouselData] = await Promise.all([
+			postsResponse.json(),
+			carouselResponse.json()
+		]);
 
-			const imageUrl = `/api/images/${post.collectionId}/${post.id}/${post.cover}`;
-
-			return {
-				...post,
-				cover: imageUrl
-			};
-		});
-
-		const carouselImages = carouselResult.items
-			.map((item) => {
-				if (!item.image) return null;
-
-				return {
-					alt: 'test',
-					src: `/api/images/${item.collectionId}/${item.id}/${item.image}`
-				};
-			})
-			.filter(Boolean);
-
-		const pageData = {
-			posts: structuredClone(posts),
-			carouselImages
+		return {
+			posts: postsData?.items ?? [],
+			carouselImages: carouselData?.items ?? []
 		};
-
-		pageCache.set(CACHE_KEY, pageData);
-
-		return pageData;
 	} catch (err) {
-		console.error('Error fetching records:', err);
+		console.error('Error fetching data:', err);
 		return {
 			posts: [],
 			carouselImages: []

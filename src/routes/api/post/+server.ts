@@ -29,3 +29,25 @@ export const GET: RequestHandler = async ({ url }) => {
 		return json({ posts: [] }, { status: 500 });
 	}
 };
+
+export const POST: RequestHandler = async ({ request }) => {
+	try {
+		const formData = await request.formData();
+		const coverFile = formData.get('cover') as File;
+		const isPublic = formData.get('isPublic') === 'on';
+
+		const pbFormData = new FormData();
+		pbFormData.append('title', formData.get('title') as string);
+		pbFormData.append('cover', coverFile);
+		pbFormData.append('isPublic', String(isPublic));
+		pbFormData.append('shortDescription', formData.get('shortDescription') as string);
+		pbFormData.append('topicId', formData.get('topicId') as string);
+
+		const record = await pb.collection('post').create(pbFormData);
+
+		return json({ success: true, data: record });
+	} catch (err) {
+		console.error('Error creating post:', err);
+		return json({ success: false, error: 'Failed to create post' }, { status: 500 });
+	}
+};

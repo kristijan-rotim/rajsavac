@@ -1,30 +1,29 @@
-import { pb } from '$lib';
-import type { Actions } from './$types';
+import type { Actions, PageServerLoad } from './$types';
+
+export const load: PageServerLoad = async ({ fetch }) => {
+	const response = await fetch('/api/topic');
+	const data = await response.json();
+	return { topics: data.topics };
+};
 
 export const actions = {
-    create: async ({ request }) => {
-        const formData = await request.formData();
-        const coverFile = formData.get('cover') as File;
-
-        try {
-            const pbFormData = new FormData();
-            pbFormData.append('title', formData.get('title') as string);
-            pbFormData.append('cover', coverFile);
-            pbFormData.append('topicId', '58v8k3sl2u964w7');
-            pbFormData.append('shortDescription', formData.get('shortDescription') as string);
-
-            const record = await pb.collection('posts').create(pbFormData);
-
-            return {
-                success: true,
-                data: record
-            };
-        } catch (err) {
-            console.error('Error creating post:', err);
-            return {
-                success: false,
-                error: 'Failed to create post'
-            };
-        }
-    }
+	create: async ({ request, fetch }) => {
+		const formData = await request.formData();
+		try {
+			const response = await fetch('/api/post', {
+				method: 'POST',
+				body: formData
+			});
+			if (!response.ok) {
+				const errorText = await response.text();
+				console.error('Error response from /api/post:', errorText);
+				throw new Error('Failed to create post');
+			}
+			const data = await response.json();
+			return { success: true, data };
+		} catch (err) {
+			console.error('Error creating post:', err);
+			return { success: false, error: 'Failed to create post' };
+		}
+	}
 } satisfies Actions;

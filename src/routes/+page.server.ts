@@ -18,13 +18,13 @@ export const load: PageLoad = async () => {
 		const carouselResult = await pb.collection('carousel').getList(1, 3, { sort: '-updated' });
 
 		const posts = result.items.map((post) => {
-			if (!post.cover) return { ...post, image: '/placeholder.png' };
+			if (!post.cover) return { ...post, cover: '/placeholder.png' };
 
 			const imageUrl = `/api/images/${post.collectionId}/${post.id}/${post.cover}`;
 
 			return {
 				...post,
-				image: imageUrl
+				cover: imageUrl
 			};
 		});
 

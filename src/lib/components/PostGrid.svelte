@@ -38,10 +38,10 @@
 		<div class="grid grid-cols-1 gap-6 pb-8 md:grid-cols-2 lg:grid-cols-3">
 			{#each posts as post}
 				<Card class="h-[500px] w-full !max-w-none">
-					{#if post.image}
+					{#if post.cover}
 						<img
 						  class="h-64 w-full rounded-t-lg object-cover"
-						  src={`${post.image}`}
+						  src={`${post.cover}`}
 						  alt={post.title}
 						/>
 					{/if}
@@ -51,7 +51,7 @@
 					<p class="description p-4 font-normal text-gray-700 dark:text-gray-400">
 						{post.shortDescription}
 					</p>
-					<Button class="mt-auto w-fit">
+					<Button href={`/post/${post.id}`} class="mt-auto w-fit">
 						Procitaj vise
 						<ArrowRightOutline class="ms-2 h-6 w-6 text-white" />
 					</Button>
@@ -59,7 +59,6 @@
 			{/each}
 		</div>
 	</div>
-{:else}
 {/if}
 <div class="p-8 text-center">
 	<p class="text-xl text-gray-600">Loading posts...</p>

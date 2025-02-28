@@ -46,7 +46,7 @@ services:
       DB_URL: http://pocketbase:8090
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.svelteApp.rule=Host(`www.rajsavac.space`)"
+      - "traefik.http.routers.svelteApp.rule=Host(`rajsavac.space`)"
       - "traefik.http.routers.svelteApp.entrypoints=websecure"
       - "traefik.http.routers.svelteApp.tls.certresolver=myresolver"
       - "traefik.http.services.svelteApp.loadbalancer.server.port=3000"
